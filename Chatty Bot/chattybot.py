@@ -15,3 +15,12 @@ remainder5 = int(input())
 remainder7 = int(input())
 age = (remainder3 * 70 + remainder5 * 21 + remainder7 * 15) % 105
 print("Your age is " + str(age) + "; that's a good time to start programming!")
+
+# read a number and count to it here
+print('Now I will prove to you that I can count to any number you want.')
+num = int(input())
+counter = 0
+while counter <= num:
+    print(str(counter) + " !")
+    counter += 1
+print('Completed, have a nice day!')
