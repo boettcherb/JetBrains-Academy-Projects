@@ -44,11 +44,30 @@ def find_starting_player():
     return "player"
 
 
+def print_snake():
+    global snake
+    print()
+    print(snake[0])
+
+
+def print_player_dominoes():
+    global player
+    print("\nYour pieces:")
+    for i, domino in enumerate(player):
+        print(f"{i + 1}:{domino}")
+
+
 while not player_to_move:
     deal_dominoes()
     player_to_move = find_starting_player()
-print(f"Stock Pieces: {stock}")
-print(f"Computer pieces: {computer}")
-print(f"Player pieces: {player}")
-print(f"Domino snake: {snake}")
-print(f"Status: {player_to_move}")
+print("=" * 70)
+print(f"Stock size: {len(stock)}")
+print(f"Computer pieces: {len(computer)}")
+print_snake()
+print_player_dominoes()
+print()
+if player_to_move == "computer":
+    print("Status: Computer is about to make a move. "
+          "Press Enter to continue...")
+else:
+    print("Status: It's your turn to make a move. Enter your command.")
