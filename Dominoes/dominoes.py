@@ -9,7 +9,7 @@ player = []
 computer = []
 stock = []
 snake = []
-player_to_move = None
+player_to_move = "neither"
 
 
 def deal_dominoes():
@@ -34,20 +34,26 @@ def find_starting_player():
     player_double = find_max_double(player)
     computer_double = find_max_double(computer)
     if not player_double and not computer_double:
-        return None
+        return "neither"
     if player_double > computer_double:
         snake.append(player_double)
         player.remove(player_double)
-        return "computer"
+        return False
     snake.append(computer_double)
     computer.remove(computer_double)
-    return "player"
+    return True
 
 
 def print_snake():
     global snake
     print()
-    print(snake[0])
+    if len(snake) > 6:
+        print(f"{snake[0]}{snake[1]}{snake[2]}...", end="")
+        print(f"{snake[-3]}{snake[-2]}{snake[-1]}")
+    else:
+        for domino in snake:
+            print(domino, end="")
+        print()
 
 
 def print_player_dominoes():
@@ -57,17 +63,65 @@ def print_player_dominoes():
         print(f"{i + 1}:{domino}")
 
 
-while not player_to_move:
+def make_move(game_move, hand):
+    global stock, player_to_move
+    player_to_move = not player_to_move
+    if game_move == 0:
+        if len(stock) > 0:
+            hand.append(stock.pop())
+    else:
+        domino = hand.pop(abs(game_move) - 1)
+        snake.insert(0 if game_move < 0 else len(stock), domino)
+
+
+def end_game():
+    global player, computer, snake
+    if len(player) == 0:
+        print("Status: The game is over. You won!")
+        return True
+    if len(computer) == 0:
+        print("Status: The game is over. The computer won!")
+        return True
+    count = 0
+    if snake[0][0] == snake[-1][-1]:
+        num = snake[0][0]
+        for domino in snake:
+            count += (domino[0] == num) + (domino[1] == num)
+    if count == 8:
+        print("Status: The game is over. It's a draw!")
+        return True
+    return False
+
+
+def is_number(string):
+    if string.isdecimal():
+        return True
+    return string[1:].isdecimal() and string[0] == '-'
+
+
+while player_to_move == "neither":
     deal_dominoes()
     player_to_move = find_starting_player()
-print("=" * 70)
-print(f"Stock size: {len(stock)}")
-print(f"Computer pieces: {len(computer)}")
-print_snake()
-print_player_dominoes()
-print()
-if player_to_move == "computer":
-    print("Status: Computer is about to make a move. "
-          "Press Enter to continue...")
-else:
-    print("Status: It's your turn to make a move. Enter your command.")
+
+while True:
+    print("=" * 70)
+    print(f"Stock size: {len(stock)}")
+    print(f"Computer pieces: {len(computer)}")
+    print_snake()
+    print_player_dominoes()
+    print()
+    if end_game():
+        break
+    if player_to_move:
+        print("Status: It's your turn to make a move. Enter your command.")
+        move = input()
+        while not is_number(move) or abs(int(move)) > len(player):
+            print("Invalid input. Please try again.")
+            move = input()
+        make_move(int(move), player)
+    else:
+        print("Status: Computer is about to make a move. "
+              "Press Enter to continue...")
+        input()
+        computer_move = random.randint(-len(computer), len(computer))
+        make_move(computer_move, computer)
