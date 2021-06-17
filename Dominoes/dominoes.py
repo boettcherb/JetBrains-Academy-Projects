@@ -90,6 +90,37 @@ def make_move(game_move, hand):
     return True
 
 
+def get_max_domino(dominoes, counts):
+    max_domino = None
+    max_score = -1
+    for domino in dominoes:
+        score = counts[domino[0]] + counts[domino[1]]
+        if score > max_score:
+            max_domino = domino
+            max_score = score
+    return max_domino
+
+
+def choose_computer_move():
+    global computer, snake
+    counts = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
+    for domino in computer:
+        counts[domino[0]] += 1
+        counts[domino[1]] += 1
+    for domino in snake:
+        counts[domino[0]] += 1
+        counts[domino[1]] += 1
+    computer_copy = computer[:]
+    while len(computer_copy) > 0:
+        max_domino = get_max_domino(computer_copy, counts)
+        if snake[0][0] in max_domino:
+            return -(computer.index(max_domino) + 1)
+        if snake[-1][-1] in max_domino:
+            return computer.index(max_domino) + 1
+        computer_copy.remove(max_domino)
+    return 0
+
+
 def end_game():
     global player, computer, snake
     if len(player) == 0:
@@ -146,6 +177,4 @@ while True:
         print("Status: Computer is about to make a move. "
               "Press Enter to continue...")
         input()
-        computer_move = random.randint(-len(computer), len(computer))
-        while not make_move(computer_move, computer):
-            computer_move = random.randint(-len(computer), len(computer))
+        make_move(choose_computer_move(), computer)
