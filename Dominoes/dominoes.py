@@ -64,14 +64,30 @@ def print_player_dominoes():
 
 
 def make_move(game_move, hand):
-    global stock, player_to_move
-    player_to_move = not player_to_move
+    global stock, snake, player_to_move
     if game_move == 0:
         if len(stock) > 0:
             hand.append(stock.pop())
+        player_to_move = not player_to_move
+        return True
+    domino = hand.pop(abs(game_move) - 1)
+    if game_move > 0:
+        if snake[-1][-1] not in domino:
+            hand.insert(abs(game_move) - 1, domino)
+            return False
+        else:
+            if domino[0] != snake[-1][-1]:
+                domino.reverse()
     else:
-        domino = hand.pop(abs(game_move) - 1)
-        snake.insert(0 if game_move < 0 else len(stock), domino)
+        if snake[0][0] not in domino:
+            hand.insert(abs(game_move) - 1, domino)
+            return False
+        else:
+            if domino[-1] != snake[0][0]:
+                domino.reverse()
+    snake.insert(0 if game_move < 0 else len(snake), domino)
+    player_to_move = not player_to_move
+    return True
 
 
 def end_game():
@@ -99,6 +115,14 @@ def is_number(string):
     return string[1:].isdecimal() and string[0] == '-'
 
 
+def get_move():
+    move_string = input()
+    while not is_number(move_string) or abs(int(move_string)) > len(player):
+        print("Invalid input. Please try again.")
+        move_string = input()
+    return int(move_string)
+
+
 while player_to_move == "neither":
     deal_dominoes()
     player_to_move = find_starting_player()
@@ -114,14 +138,14 @@ while True:
         break
     if player_to_move:
         print("Status: It's your turn to make a move. Enter your command.")
-        move = input()
-        while not is_number(move) or abs(int(move)) > len(player):
-            print("Invalid input. Please try again.")
-            move = input()
-        make_move(int(move), player)
+        move = get_move()
+        while not make_move(move, player):
+            print("Illegal move. Please try again.")
+            move = get_move()
     else:
         print("Status: Computer is about to make a move. "
               "Press Enter to continue...")
         input()
         computer_move = random.randint(-len(computer), len(computer))
-        make_move(computer_move, computer)
+        while not make_move(computer_move, computer):
+            computer_move = random.randint(-len(computer), len(computer))
