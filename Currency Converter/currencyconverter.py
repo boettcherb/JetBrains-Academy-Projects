@@ -1,11 +1,6 @@
-coins = float(input())
-rub = round(coins * 2.98, 2)
-ars = round(coins * 0.82, 2)
-hnl = round(coins * 0.17, 2)
-aud = round(coins * 1.9622, 2)
-mad = round(coins * 0.208, 2)
-print(f"I will get {rub} RUB from the sale of {coins} conicoins.")
-print(f"I will get {ars} ARS from the sale of {coins} conicoins.")
-print(f"I will get {hnl} HNL from the sale of {coins} conicoins.")
-print(f"I will get {aud} AUD from the sale of {coins} conicoins.")
-print(f"I will get {mad} MAD from the sale of {coins} conicoins.")
+import requests
+
+r = requests.get(f"http://www.floatrates.com/daily/{input()}.json")
+json_data = r.json()
+print(json_data["usd"])
+print(json_data["eur"])
