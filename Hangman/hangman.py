@@ -1,8 +1,9 @@
 import random
 
 print("H A N G M A N")
-words = ("python", "java", "kotlin", "javascript")
-if input("Guess the word: ") == random.choice(words):
+choice = random.choice(("python", "java", "kotlin", "javascript"))
+partial_string = choice[:3] + ((len(choice) - 3) * "-")
+if input(f"Guess the word {partial_string}: ") == choice:
     print("You survived!")
 else:
     print("You lost!")
