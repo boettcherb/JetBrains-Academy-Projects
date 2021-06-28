@@ -1,6 +1,10 @@
 class Board:
+    dx = (-2, -2, -1, -1, 1, 1, 2, 2)
+    dy = (1, -1, 2, -2, 2, -2, 1, -1)
+
     def __init__(self):
         self.board = []
+        self.visited = []
         while True:
             try:
                 x, y = input("Enter your board dimensions: ").split()
@@ -15,6 +19,7 @@ class Board:
         one_square = "_" * self.square_length
         for _ in range(self.rows):
             self.board.append([one_square for _ in range(self.cols)])
+            self.visited.append([False for _ in range(self.cols)])
         self.row_just = len(str(self.rows))
         self.knight_row = -1
         self.knight_col = -1
@@ -43,20 +48,29 @@ class Board:
                     self.knight_row = self.rows - y
                     self.knight_col = x - 1
                     self.board[self.knight_row][self.knight_col] = square
+                    self.visited[self.knight_row][self.knight_col] = True
                     break
                 print("Invalid position!")
             except ValueError:
                 print("Invalid position!")
 
     def mark_knight_moves(self):
-        dx = (-2, -2, -1, -1, 1, 1, 2, 2)
-        dy = (1, -1, 2, -2, 2, -2, 1, -1)
         for i in range(8):
-            new_knight_x = self.knight_row + dx[i]
-            new_knight_y = self.knight_col + dy[i]
+            new_knight_x = self.knight_row + Board.dx[i]
+            new_knight_y = self.knight_col + Board.dy[i]
             if 0 <= new_knight_x < self.rows and 0 <= new_knight_y < self.cols:
-                square = ((self.square_length - 1) * " ") + "O"
+                count = self.count_moves(new_knight_x, new_knight_y)
+                square = ((self.square_length - 1) * " ") + str(count)
                 self.board[new_knight_x][new_knight_y] = square
+
+    def count_moves(self, row, col):
+        count = 0
+        for i in range(8):
+            new_knight_x = row + Board.dx[i]
+            new_knight_y = col + Board.dy[i]
+            if 0 <= new_knight_x < self.rows and 0 <= new_knight_y < self.cols:
+                count += not self.visited[new_knight_x][new_knight_y]
+        return count
 
 
 def main():
