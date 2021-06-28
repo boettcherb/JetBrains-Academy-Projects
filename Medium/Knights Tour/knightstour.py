@@ -16,6 +16,8 @@ class Board:
         for _ in range(self.rows):
             self.board.append([one_square for _ in range(self.cols)])
         self.row_just = len(str(self.rows))
+        self.knight_row = -1
+        self.knight_col = -1
 
     def print_board(self):
         top_len = self.cols * (self.square_length + 1) + 3
@@ -38,16 +40,30 @@ class Board:
                 y = int(y)
                 if 1 <= x <= self.cols and 1 <= y <= self.rows:
                     square = ((self.square_length - 1) * " ") + "X"
-                    self.board[self.rows - y][x - 1] = square
+                    self.knight_row = self.rows - y
+                    self.knight_col = x - 1
+                    self.board[self.knight_row][self.knight_col] = square
                     break
                 print("Invalid position!")
             except ValueError:
                 print("Invalid position!")
 
+    def mark_knight_moves(self):
+        dx = (-2, -2, -1, -1, 1, 1, 2, 2)
+        dy = (1, -1, 2, -2, 2, -2, 1, -1)
+        for i in range(8):
+            new_knight_x = self.knight_row + dx[i]
+            new_knight_y = self.knight_col + dy[i]
+            if 0 <= new_knight_x < self.rows and 0 <= new_knight_y < self.cols:
+                square = ((self.square_length - 1) * " ") + "O"
+                self.board[new_knight_x][new_knight_y] = square
+
 
 def main():
     board = Board()
     board.set_knight()
+    board.mark_knight_moves()
+    print("\nHere are the possible moves:")
     board.print_board()
 
 
