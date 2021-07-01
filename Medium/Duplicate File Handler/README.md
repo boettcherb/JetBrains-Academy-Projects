@@ -142,3 +142,113 @@ root_folder/masterpiece/rick_astley_never_gonna_give_you_up.mp3
 root_folder/audio/rock/smells_like_teen_spirit.mp3
 root_folder/audio/sia_snowman.mp3
 ```
+
+## 3. What's That Hash About
+
+### Theory
+
+Now we have a list of files of the same size. The next step is to check the files with the help of the Hashlib module. Why do we need to use hash here? The answer is very simple — it's convenient! As you may know, a hash function can take any input of any length. It produces several strings as output.
+
+A hash function has the following main features:
+
+* easy to compute
+* unique output
+* small and fixable output
+
+So, a file type or size plays a minor role. We can get a hash of any file and compare it against a hash of another file.
+We will work with an MD5 hash function of the Hashlib module. Take a look at some useful functions:
+
+* `md5()` creates a hash object
+* `update()` updates a hash object
+* `hexdigest()` gets the HEX digest
+
+### Description
+
+In this stage, we need to get hashes of files of the same size and check whether they are the same file. Remember that hash work with byte-like objects only, so pay attention to the file read mode (the rb mode).
+
+### Objectives
+
+Keep the functionality from the previous stages. To complete the stage, your program should:
+
+1. Ask for duplicates check;
+2. Read user input: `yes` or `no`. Print `Wrong option` if any other input is received. Repeat until a user provides a valid answer. If the input is `yes`, get the hash of files of the same size; group the files of the same hash, assign numbers to these files. Otherwise, the program should stop the operation;
+3. Assign numbers to lines with files after hashing. You should assign numbers to files based on the total number of files in output. It is needed for the purpose of the next stage.
+4. Print the information about the files of the same outputs along with their hashes (see example). Sort the group of files by size as in the previous stage. You don't have to sort hash subgroups.
+
+Please note: you should use full path to file from root directory when printing or reading.
+
+### Examples
+
+The greater-than symbol followed by a space (`> `) represents the user input. Note that it's not part of the input.
+
+Suppose, you have the following set of files and folders:
+```
++---[root_folder]
+    +---gordon_ramsay_chicken_breast.avi /4590560 bytes
+    +---poker_face.mp3 /5550640 bytes
+    +---poker_face_copy.mp3 /5550640 bytes
+    +---[audio]
+    |   |
+    |   +---voice.mp3 /2319746 bytes
+    |   +---sia_snowman.mp3 /4590560 bytes
+    |   +---nea_some_say.mp3 /3232056 bytes
+    |   +---[classic]
+    |   |   |
+    |   |   +---unknown.mp3 /3422208 bytes
+    |   |   +---vivaldi_four_seasons_winter.mp3 /9158144 bytes
+    |   |   +---chopin_waltz7_op64_no2.mp3 /9765504 bytes
+    |   +---[rock]
+    |       |
+    |       +---smells_like_teen_spirit.mp3 /4590560 bytes
+    |       +---numb.mp3 /5786312 bytes
+    +---[masterpiece]
+        |
+        +---rick_astley_never_gonna_give_you_up.mp3 /3422208 bytes
+        +---the_magic_flute_queen_of_the_night_aria.mp3 /3422208 bytes
+        +---the_magic_flute_queen_of_the_night_aria_copy.mp3 /3422208 bytes
+```
+Program output:
+```
+> python handler.py root_folder
+
+Enter file format:
+>
+
+Size sorting options:
+1. Descending
+2. Ascending
+
+Enter a sorting option:
+> 1
+
+5550640 bytes
+root_folder/poker_face.mp3
+root_folder/poker_face_copy.mp3
+
+4590560 bytes
+root_folder/gordon_ramsay_chicken_breast.avi
+root_folder/audio/sia_snowman.mp3
+root_folder/audio/rock/smells_like_teen_spirit.mp3
+
+3422208 bytes
+root_folder/audio/classic/unknown.mp3
+root_folder/masterpiece/rick_astley_never_gonna_give_you_up.mp3
+root_folder/masterpiece/the_magic_flute_queen_of_the_night_aria.mp3
+root_folder/masterpiece/the_magic_flute_queen_of_the_night_aria_copy.mp3
+
+Check for duplicates?
+> yes
+
+5550640 bytes
+Hash: 909ba4ad2bda46b10aac3c5b7f01abd5
+1. root_folder/poker_face.mp3
+2. root_folder/poker_face_copy.mp3
+
+3422208 bytes
+Hash: a7f5f35426b927411fc9231b56382173
+3. root_folder/audio/classic/unknown.mp3
+4. root_folder/masterpiece/rick_astley_never_gonna_give_you_up.mp3
+Hash: b6d767d2f8ed5d21a44b0e5886680cb9
+5. root_folder/masterpiece/the_magic_flute_queen_of_the_night_aria.mp3
+6. root_folder/masterpiece/the_magic_flute_queen_of_the_night_aria_copy.mp3
+```
