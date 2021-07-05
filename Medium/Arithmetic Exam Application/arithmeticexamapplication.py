@@ -1,8 +1,13 @@
-operation = input().split()
-a, b = int(operation[0]), int(operation[2])
-if operation[1] == "+":
-    print(a + b)
-elif operation[1] == "-":
-    print(a - b)
-elif operation[1] == "*":
-    print(a * b)
+import random
+
+a = random.randint(2, 9)
+b = random.randint(2, 9)
+operator = random.choice("+-*")
+print(f"{a} {operator} {b}")
+answer = int(input())
+if operator == "+":
+    print("Right!" if a + b == answer else "Wrong!")
+elif operator == "-":
+    print("Right!" if a - b == answer else "Wrong!")
+elif operator == "*":
+    print("Right!" if a * b == answer else "Wrong!")
