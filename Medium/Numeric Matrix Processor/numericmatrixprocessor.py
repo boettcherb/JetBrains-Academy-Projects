@@ -36,6 +36,34 @@ class Matrix:
                         new_matrix[i][j] += self.matrix[i][k] * other.matrix[k][j]
             return new_matrix
 
+    def transpose(self, option):
+        if option == 1:
+            new_matrix = Matrix(self.cols, self.rows)
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    new_matrix.matrix[j][i] = self.matrix[i][j]
+            return new_matrix
+        if option == 2:
+            new_matrix = Matrix(self.cols, self.rows)
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    new_row = self.cols - j - 1
+                    new_col = self.rows - i - 1
+                    new_matrix.matrix[new_row][new_col] = self.matrix[i][j]
+            return new_matrix
+        if option == 3:
+            new_matrix = Matrix(self.rows, self.cols)
+            for i in range(self.cols):
+                for j in range(self.rows):
+                    new_matrix.matrix[i][j] = self.matrix[i][self.cols - j - 1]
+            return new_matrix
+        if option == 4:
+            new_matrix = Matrix(self.rows, self.cols)
+            for i in range(self.cols):
+                for j in range(self.rows):
+                    new_matrix.matrix[i][j] = self.matrix[self.rows - i - 1][j]
+            return new_matrix
+    
     def __str__(self):
         string = ""
         for row in self.matrix:
@@ -58,6 +86,7 @@ def main():
         print("1. Add matrices")
         print("2. Multiply matrix by a constant")
         print("3. Multiply matrices")
+        print("4. Transpose matrix")
         print("0. Exit")
         choice = int(input("Your choice: "))
         res = None
@@ -76,6 +105,14 @@ def main():
             a = get_matrix("Enter size of first matrix: ", "Enter first matrix:")
             b = get_matrix("Enter size of second matrix: ", "Enter second matrix:")
             res = a * b
+        elif choice == 4:
+            print("1. Main diagonal")
+            print("2. Side diagonal")
+            print("3. Vertical line")
+            print("4. Horizontal line")
+            option = int(input("Your choice: "))
+            a = get_matrix("Enter matrix size: ", "Enter matrix:")
+            res = a.transpose(option)
         if res == None:
             print("The operation could not be performed")
         else:
