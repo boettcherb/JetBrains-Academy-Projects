@@ -37,7 +37,7 @@ class Matrix:
                             j]
             return new_matrix
 
-    def transpose(self, option):
+    def transpose(self, option=1):
         if option == 1:
             new_matrix = Matrix(self.cols, self.rows)
             for i in range(self.rows):
@@ -74,9 +74,7 @@ class Matrix:
             return self[0][0] * self[1][1] - self[1][0] * self[0][1]
         determinant = 0
         for i in range(self.rows):
-            cofactor = self.cofactor(0, i)
-            sign = -1 if i % 2 else 1
-            determinant += sign * self[0][i] * cofactor.determinant()
+            determinant += self[0][i] * self.cofactor(0, i)
         return determinant
 
     def cofactor(self, row, col):
@@ -84,12 +82,23 @@ class Matrix:
         del matrix_copy[row]
         for i in range(self.rows - 1):
             del matrix_copy[i][col]
-        return Matrix(self.rows - 1, self.rows - 1, matrix_copy)
+        new_matrix = Matrix(self.rows - 1, self.rows - 1, matrix_copy)
+        return new_matrix.determinant() * (-1) ** (row + col)
+
+    def inverse(self):
+        determinant = self.determinant()
+        if determinant is None or determinant == 0:
+            return None
+        cofactor_matrix = Matrix(self.rows, self.cols)
+        for i in range(self.rows):
+            for j in range(self.cols):
+                cofactor_matrix[i][j] = self.cofactor(i, j)
+        return cofactor_matrix.transpose() * (1 / determinant)
 
     def __str__(self):
         string = ""
         for row in self.matrix:
-            string += " ".join(str(num) for num in row) + "\n"
+            string += " ".join([str(a) for a in row]) + "\n"
         return string
 
 
@@ -115,6 +124,7 @@ def main():
         print("3. Multiply matrices")
         print("4. Transpose matrix")
         print("5. Calculate a determinant")
+        print("6. Inverse matrix")
         print("0. Exit")
         choice = int(input("Your choice: "))
         res = None
@@ -146,10 +156,16 @@ def main():
             a = get_matrix("Enter matrix size: ", "Enter matrix:")
             res = a.transpose(option)
         elif choice == 5:
-            a = get_matrix("Enter size of matrix: ", "Enter matrix:")
+            a = get_matrix("Enter matrix size: ", "Enter matrix:")
             res = a.determinant()
+        elif choice == 6:
+            a = get_matrix("Enter matrix size: ", "Enter matrix:")
+            res = a.inverse()
         if res is None:
-            print("The operation could not be performed")
+            if choice == 6:
+                print("This matrix doesn't have an inverse.")
+            else:
+                print("The operation could not be performed")
         else:
             print("The result is:")
             print(res)
