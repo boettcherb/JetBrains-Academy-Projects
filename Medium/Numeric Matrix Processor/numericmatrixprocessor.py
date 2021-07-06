@@ -16,6 +16,13 @@ class Matrix:
                 new_matrix[i][j] += other.matrix[i][j]
         return new_matrix
 
+    def __mul__(self, scalar):
+        new_matrix = Matrix(self.rows, self.cols, self.matrix[:])
+        for row in new_matrix:
+            for j in range(self.cols):
+                row[j] *= scalar
+        return new_matrix
+
     def __str__(self):
         string = ""
         for row in self.matrix:
@@ -33,8 +40,8 @@ def get_matrix_from_user():
 
 def main():
     a = get_matrix_from_user()
-    b = get_matrix_from_user()
-    print(a + b)
+    scalar = int(input())
+    print(a * scalar)
 
 
 if __name__ == "__main__":
