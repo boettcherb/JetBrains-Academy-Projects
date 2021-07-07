@@ -2,7 +2,7 @@ def find_mean_score(applicant):
     tests = ((0, 1), (1,), (2, 3), (2,), (0, 2))
     field = applicant[3]
     scores = [int(s) for i, s in enumerate(applicant[1]) if i in tests[field]]
-    return sum(scores) / len(scores)
+    return max(float(applicant[4]), sum(scores) / len(scores))
 
 
 def sort_applicants(applicants):
@@ -19,9 +19,9 @@ def main():
     applicants = []
     with open("applicants.txt", "r") as f:
         for line in f:
-            first, last, p, c, m, cs, m1, m2, m3 = line.split()
+            first, last, p, c, m, cs, exam, m1, m2, m3 = line.split()
             name = first + " " + last
-            applicants.append([name, (p, c, m, cs), (m1, m2, m3), -1])
+            applicants.append([name, (p, c, m, cs), (m1, m2, m3), -1, exam])
 
     for priority in range(3):
         for applicant in applicants:

@@ -498,3 +498,102 @@ Giovanna Keel 80.0
 Darrah Smyth 79.5
 Fatemah Desavigny 77.0
 ```
+
+## 7. Something Special
+
+### Description
+
+At this stage, your program should:
+
+1. Read an N integer from the input. This integer represents the maximum number of students for each department.
+2. Read the file named applicants.txt once again. Mind one additional column, right after the last exam's result. This column represents the special exam's score. For example, Willie McBride 76 45 79 80 100 Physics Engineering Mathematics(where 100 is the admission exam's score).
+3. Choose the best score for a student in the ranking: either the mean score for the final exam(s) or the special exam's score. Use the same set of finals for each Department as in the previous stage. Note that you may need to compare the values several times: for example, if a student doesn't get accepted to the Department of the first priority, compare the finals mean score and the special exam's score once again (but this time, for the second priority department).
+4. Keep the rest of the steps the same as in the previous stage. Once again, there should be no more than N accepted applicants for each department; use the same principles for sorting.
+5. Output the names and the student's best score, either the mean finals score or the special exam's score to the files.
+
+### Objectives
+
+At this stage, your program should:
+
+1. Read an N integer from the input. This integer represents the maximum number of students for each department.
+2. Read the file named applicants.txt once again. The file has the same structure as in the previous stage.
+3. Consider the following exam results for departments: physics and math for the Physics department, chemistry for the Chemistry department, math for the Mathematics department, computer science and math for the Engineering Department, chemistry and physics for the Biotech department.
+4. As in the previous stage, the exams are listed in the following order for each applicant: physics, chemistry, math, computer science.
+5. For the departments that need several exams, calculate the mean score and use it to rank the applicants (use floating-point numbers with at least one decimal). Otherwise, use the result for a single exam.
+6. Keep the rest of the steps the same as in the previous stage (once again, there should be no more than N accepted applicants for each department; use the same principles for sorting).
+7. Instead of printing the results (you may do it if you want), output the admission lists to files. Create a file for each department, name it %department_name%.txt, for example, physics.txt. Write the names of the students accepted to the department and their mean finals score to the corresponding file (one student per line).
+
+### Example
+
+The greater-than symbol followed by a space (`> `) represents the user input. Note that it's not part of the input.
+
+Below is an extract of the input file:
+```
+Natha Keefe 71 67 53 60 31 Engineering Biotech Chemistry
+Crescentia Dow 86 94 85 51 80 Chemistry Physics Mathematics
+Randon Bradhust 72 88 85 83 59 Biotech Engineering Chemistry
+Dashawn Bosley 80 79 82 61 40 Mathematics Chemistry Biotech
+Nicolasa Sumpter 75 82 96 81 38 Engineering Mathematics Biotech
+Cressie Gillespie 85 92 82 70 59 Physics Mathematics Engineering
+Tawny Crockett 71 90 80 72 44 Chemistry Biotech Physics
+Kennon Inverarity 71 84 98 71 72 Mathematics Engineering Chemistry
+Halima Brydone 77 85 82 86 50 Chemistry Physics Mathematics
+Esther Bratby 55 76 88 62 30 Mathematics Chemistry Biotech
+Lorry Bunger 75 73 84 97 22 Engineering Biotech Physics
+Fatemah Desavigny 81 71 73 86 78 Physics Mathematics Engineering
+Marti Mclaws 71 71 61 60 41 Engineering Chemistry Biotech
+Estephanie Phelps 80 95 45 71 80 Chemistry Physics Mathematics
+Tommi Peerless 72 81 81 92 75 Engineering Physics Mathematics
+Cynthia Hermitton 70 59 62 88 80 Engineering Biotech Chemistry
+Cheyla Hankinson 75 80 86 88 36 Engineering Mathematics Biotech
+Giovanna Keel 84 71 76 80 79 Physics Mathematics Engineering
+Narissa Worthington 52 71 80 73 81 Biotech Chemistry Mathematics
+Aundria Guthrie 61 81 94 71 21 Mathematics Chemistry Engineering
+Teneil Maclean 85 63 84 45 69 Mathematics Physics Chemistry
+Shealynn Melville 74 76 88 62 70 Mathematics Chemistry Physics
+Darrah Smyth 75 73 84 97 94 Physics Biotech Engineering
+```
+The terminal output:
+```
+> 7
+```
+The examples of the output to different files:
+
+biotech.txt:
+```
+Narissa Worthington 81.0
+Randon Bradhust 80.0
+```
+chemistry.txt:
+```
+Estephanie Phelps 95.0
+Crescentia Dow 94.0
+Tawny Crockett 90.0
+Halima Brydone 85.0
+```
+engineering.txt:
+```
+Lorry Bunger 90.5
+Nicolasa Sumpter 88.5
+Cheyla Hankinson 87.0
+Tommi Peerless 86.5
+Cynthia Hermitton 80.0
+Marti Mclaws 60.5
+Natha Keefe 56.5
+```
+mathematics.txt:
+```
+Kennon Inverarity 98.0
+Aundria Guthrie 94.0
+Esther Bratby 88.0
+Shealynn Melville 88.0
+Teneil Maclean 84.0
+Dashawn Bosley 82.0
+```
+physics.txt:
+```
+Darrah Smyth 94.0
+Cressie Gillespie 83.5
+Giovanna Keel 80.0
+Fatemah Desavigny 78.0
+```
