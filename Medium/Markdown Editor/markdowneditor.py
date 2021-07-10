@@ -77,6 +77,8 @@ def main():
             else:
                 markdown += functions[user_formatter]()
         print(markdown)
+    with open("output.md", "w") as file:
+        print(markdown, file=file, end="")
 
 
 if __name__ == "__main__":
