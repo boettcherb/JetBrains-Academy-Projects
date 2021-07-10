@@ -41,13 +41,28 @@ def new_line():
     return "\n"
 
 
+def md_list(formatter):
+    num_rows = int(input("Number of rows: "))
+    while num_rows < 1:
+        print("The number of rows should be greater than zero")
+        num_rows = int(input("Number of Rows: "))
+    row = 1
+    markdown = ""
+    while row <= num_rows:
+        md_symbol = str(row) + "." if formatter == "ordered-list" else "*"
+        markdown += f"{md_symbol} {input(f'Row #{row}: ')}\n"
+        row += 1
+    return markdown
+
+
 def main():
     formatters = ["plain", "bold", "italic", "header", "link", "inline-code",
-                  "new-line"]
+                  "new-line", "ordered-list", "unordered-list"]
     special = ["!done", "!help"]
     functions = {"plain": plain, "bold": bold, "italic": italic,
                  "header": header, "link": link, "inline-code": inline_code,
-                 "new-line": new_line}
+                 "new-line": new_line, "ordered-list": md_list,
+                 "unordered-list": md_list}
     markdown = ""
     while True:
         user_formatter = get_formatter(formatters, special)
@@ -57,7 +72,10 @@ def main():
             print("Available formatters:", *formatters)
             print("Special commands:", *special)
         else:
-            markdown += functions[user_formatter]()
+            if user_formatter in ("ordered-list", "unordered-list"):
+                markdown += functions[user_formatter](user_formatter)
+            else:
+                markdown += functions[user_formatter]()
         print(markdown)
 
 
