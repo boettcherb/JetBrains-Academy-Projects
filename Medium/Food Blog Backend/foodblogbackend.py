@@ -25,6 +25,20 @@ def main():
     cur.execute("INSERT INTO measures VALUES (0, 'ml'), (1, 'g'), (2, 'l'), "
                 "(3, 'cup'), (4, 'tbsp'), (5, 'tsp'), (6, 'dsp'), (7, '');")
     con.commit()
+    cur.execute("CREATE TABLE recipes ("
+                "    recipe_id INT PRIMARY KEY,"
+                "    recipe_name VARCHAR(20) NOT NULL,"
+                "    recipe_description VARCHAR(100)"
+                ");")
+    recipe_name = input("Recipe name: ")
+    recipe_id = 0
+    while recipe_name != "":
+        recipe_description = input("Recipe description: ")
+        cur.execute(f"INSERT INTO recipes VALUES ({recipe_id},"
+                    f"'{recipe_name}', '{recipe_description}');")
+        recipe_id += 1
+        recipe_name = input("Recipe name: ")
+    con.commit()
     con.close()
 
 

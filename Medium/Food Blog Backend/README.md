@@ -46,7 +46,6 @@ If you need more information, the SQLite Tutorial will help you!
 
 ### Objectives
 
-
 1. Create a database. Pass the name of the database to the script as an argument.
 2. Create a table named meals with two columns: meal_id of an integer type with the primary key attribute, and meal_name of a text type and with the unique and not null attribute.
 3. Create a table named ingredients with two columns: ingredient_id of an integer type with the primary key attribute and ingredient_name of a text type with the unique and not null attribute. Multi-word ingredients are out of scope, you don't need to implement their support in your script.
@@ -65,4 +64,31 @@ If you need more information, the SQLite Tutorial will help you!
 The greater-than symbol followed by a space (`> `) represents the user input. Note that it's not part of the input.
 ```
 > python food_blog.py food_blog.db
+```
+
+## 2. Time for Recipies!
+
+### Description
+
+It is time to create the main recipe table. You decided to store the recipe name and description in the main table. You wanted to indicate which meal suits the dish best, but your great-grandmother told you that it doesn't have to be just one meal. So you have to think about the solution. You also need to build a tool that will allow you to fill your database with data.
+
+### Objectives
+
+1. Create a table named `recipes` with three columns: `recipe_id` of an integer type with the primary key attribute, `recipe_name` of a text type with the not-null attribute, and `recipe_description` of a text type.
+2. Prepare a simple system that allows you to populate this table. Ask for the recipe name and the cooking directions, and insert the data into the table.
+3. When a zero-length string is entered for the recipe name the script should terminate. Remember to commit your changes and close the database.
+4. Remember! You can print anything you want. Tests will check only the database file that your script will create and populate.
+5. You do not need to validate the entered data. The tests will pass the correct values.
+
+### Example
+
+The greater-than symbol followed by a space (> ) represents the user input. Note that it's not part of the input.
+```
+> python food_blog.py food_blog.db
+Pass the empty recipe name to exit.
+Recipe name: > Cold milk
+Recipe description: > Freeze milk
+Recipe name: > Hot milk
+Recipe description: > Boil milk
+Recipe name: >
 ```
