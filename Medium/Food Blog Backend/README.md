@@ -92,3 +92,59 @@ Recipe name: > Hot milk
 Recipe description: > Boil milk
 Recipe name: >
 ```
+
+## 3. Many-to-many Relations
+
+### Description
+
+On this stage, you need to create many-to-many relations between two tables. One dish can be served at different mealtimes, and one meal can consist of different dishes. However, this model is not recommended. Instead, we suggest you implementing a cross-reference table that contains primary key attributes from the two tables in relation. 
+
+### Theory
+
+In SQLite, you can use two methods to retrieve entries from the returned object: `fetchall()` and `fetchone()`. The first method returns all matching entries as a list of tuples, while the second method returns the next data row or `None` if there are no more rows:
+```
+result = cursor_name.execute(SQL_query_as_string)
+all_rows = result.fetchall()  # all_rows stores a list of tuples
+
+result = cursor_name.execute(SQL_query_as_string)
+next_row = result.fetchone()  # returns a single tuple
+```
+A useful attribute of the cursor object is `lastrowid`. When the **INTEGER PRIMARY KEY** column is auto-incremented, this attribute stores the value of this key. It allows you to know the `PRIMARY KEY` attribute of the entry. Don't forget to commit your changes!
+```
+result = cursor_name.execute(SQL_INSERT_query_as_string).lastrowid
+```
+To use foreign keys in your SQLite database, you need to turn them on first by executing the command:
+```
+PRAGMA foreign_keys = ON;
+```
+When creating a table, you need to associate the foreign key with the given column:
+```
+CREATE TABLE IF NOT EXISTS table1(table1_id INTEGER PRIMARY KEY, table2_id INTEGER NOT NULL,
+FOREIGN KEY(table2_id) REFERENCES table2(table2_id));
+```
+Once you indicated the `FOREIGN KEY` parameter in your code, the entries associated with this parameter cannot be deleted as long as this parameter persists. In the example above, we won't be able to remove the entries from the `table2` until we remove the linking entry from the `table1`.
+
+You can refer to the Foreign Key section of the SQLite tutorial for more details.
+
+### Objectives
+
+1. Create a table named `serve` with three columns: `serve_id` of an `INTEGER` type with the `PRIMARY KEY` attribute, and `recipe_id` and `meal_id`, both of `INTEGER` type with the `NOT NULL` attribute.
+2. Assign the `recipe_id` and `meal_id` as Foreign Keys to the following tables: `recipes` (the `recipe_id` column) and `meals` (the `meal_id` column).
+3. Once a user has entered a dish name and a recipe description print all available meals with their primary key numbers.
+4. Ask a user when this dish can be served. Users should input numbers separated by a space.
+5. Input values to the `serve` table. If the user has selected three meals when the dish can be served, there should be three new entries in the `serve` table.
+6. You do not need to validate the entered data. The tests will enter the correct values.
+7. Tests do not check the output. You can print anything you want. Tests will check only the database file that your script will create.
+
+### Example
+
+The greater-than symbol followed by a space (`> `) represents the user input. Note that it's not part of the input.
+```
+> python food_blog.py food_blog.db
+Pass the empty recipe name to exit.
+Recipe name: > Hot milk
+Recipe description: > Boil milk
+1) breakfast  2) brunch  3) lunch  4) supper 
+When the dish can be served: > 1 3 4
+Recipe name:
+```

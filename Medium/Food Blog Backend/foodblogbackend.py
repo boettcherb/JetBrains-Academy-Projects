@@ -30,12 +30,34 @@ def main():
                 "    recipe_name VARCHAR(20) NOT NULL,"
                 "    recipe_description VARCHAR(100)"
                 ");")
+    cur.execute("CREATE TABLE serve ("
+                "    serve_id INT PRIMARY KEY,"
+                "    recipe_id INT NOT NULL,"
+                "    meal_id INT NOT NULL,"
+                "    CONSTRAINT fk_recipes FOREIGN KEY (recipe_id)"
+                "    REFERENCES recipes(recipe_id),"
+                "    CONSTRAINT fk_meals FOREIGN KEY (meal_id)"
+                "    REFERENCES meals(meal_id)"
+                ");")
+    con.commit()
     recipe_name = input("Recipe name: ")
     recipe_id = 0
+    serve_id = 0
     while recipe_name != "":
         recipe_description = input("Recipe description: ")
         cur.execute(f"INSERT INTO recipes VALUES ({recipe_id},"
                     f"'{recipe_name}', '{recipe_description}');")
+
+        all_rows = cur.execute("SELECT * FROM meals;").fetchall()
+        for row in all_rows:
+            print(f"{row[0]}) {row[1]}  ", end="")
+        print()
+        nums = [int(n) for n in input("When the dish can be served: ").split()]
+        for num in nums:
+            cur.execute(f"INSERT INTO serve VALUES ({serve_id}, {recipe_id},"
+                        f"{num});")
+            serve_id += 1
+        con.commit()
         recipe_id += 1
         recipe_name = input("Recipe name: ")
     con.commit()
