@@ -35,8 +35,10 @@ def create_account(con):
     return card_num, pin
 
 
-def login(con, card_num, pin):
-    q = f"SELECT id FROM card WHERE number = '{card_num}' AND pin = '{pin}';"
+def login(con, card_num, pin=None):
+    q = f"SELECT id FROM card WHERE number = '{card_num}';"
+    if pin is not None:
+        q = q[:-1] + f" AND pin = {pin};"
     res = con.cursor().execute(q).fetchone()
     return None if not res else res[0]
 
@@ -44,6 +46,31 @@ def login(con, card_num, pin):
 def get_balance(con, card_id):
     q = f"SELECT balance FROM card WHERE id = {card_id};"
     return con.cursor().execute(q).fetchone()[0]
+
+
+def add_income(con, acct_id, income):
+    q = f"UPDATE card SET balance = balance + {income} WHERE id = {acct_id};"
+    con.cursor().execute(q)
+    con.commit()
+
+
+def close_account(con, account_id):
+    q = f"DELETE FROM card WHERE id = {account_id};"
+    con.cursor().execute(q)
+    con.commit()
+
+
+def transfer_money(con, orig_id, t_id, t_amount):
+    q = f"SELECT balance FROM card WHERE id = {orig_id};"
+    current_balance = con.cursor().execute(q).fetchone()[0]
+    if current_balance < t_amount:
+        return "Not enough Money!"
+    q = f"UPDATE card SET balance = balance - {t_amount} WHERE id = {orig_id};"
+    con.cursor().execute(q)
+    q = f"UPDATE card SET balance = balance + {t_amount} WHERE id = {t_id};"
+    con.cursor().execute(q)
+    con.commit()
+    return "Success!"
 
 
 def main():
@@ -67,13 +94,36 @@ def main():
             else:
                 print("\nYou have successfully logged in!\n")
                 while True:
-                    choice = input("1. Balance\n2. Log out\n0. Exit\n")
+                    choice = input("1. Balance\n2. Add income\n3. Do transfer"
+                                   "\n4. Close account\n5. Log out\n0. Exit\n")
                     if choice == "0":
                         print("\nBye!")
                         return
                     elif choice == "1":
                         print(f"\nBalance: {get_balance(con, account_id)}\n")
                     elif choice == "2":
+                        income = input("\nEnter income:\n")
+                        add_income(con, account_id, int(income))
+                        print("Income was Added!")
+                    elif choice == "3":
+                        print("\nTransfer")
+                        transfer_num = input("Enter card number:\n")
+                        if get_checksum(transfer_num[:-1]) != transfer_num[-1]:
+                            print("Probably you made a mistake in the card "
+                                  "number. Please try again!")
+                            continue
+                        transfer_id = login(con, transfer_num)
+                        if transfer_id is None:
+                            print("Such a card does not exist.")
+                        else:
+                            transfer_amount = input("Enter how much money you "
+                                                    "want to transfer:\n")
+                            print(transfer_money(con, account_id, transfer_id,
+                                                 int(transfer_amount)))
+                    elif choice == "4":
+                        close_account(con, account_id)
+                        print("The account has been closed")
+                    elif choice == "5":
                         print("\nYou have successfully logged out!\n")
                         break
         elif action == "0":
