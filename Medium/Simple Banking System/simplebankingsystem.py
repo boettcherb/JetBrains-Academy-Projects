@@ -7,7 +7,7 @@ class Account:
     @staticmethod
     def get_account(card_number, pin):
         for acct in Account.all_accounts:
-            if acct.get_card_number() == card_number and acct.get_pin() == pin:
+            if acct.card_number == card_number and acct.pin == pin:
                 return acct
         return None
 
@@ -20,18 +20,29 @@ class Account:
 
     def __init__(self):
         self.account_number = self.get_new_account_number()
-        self.pin = random.randint(0, 9999)
-        self.checksum = random.randint(0, 9)
+        self.pin, self.card_number = 0, 0
+        self.set_pin()
+        self.set_card_number()
         self.balance = 0
         Account.all_accounts.append(self)
 
-    def get_card_number(self):
-        an = str(self.account_number)
-        an = "0" * (9 - len(an)) + an
-        return "400000" + an + str(self.checksum)
+    def set_pin(self):
+        pin = str(random.randint(0, 9999))
+        self.pin = "0" * (4 - len(pin)) + pin
 
-    def get_pin(self):
-        return "0" * (4 - len(str(self.pin))) + str(self.pin)
+    def set_card_number(self):
+        account_num = str(self.account_number)
+        card_num = "400000" + "0" * (9 - len(account_num)) + account_num
+        self.card_number = card_num + str(self.get_check_sum(card_num))
+
+    def get_check_sum(self, card_num):
+        digit_sum = 0
+        for i, d in enumerate(card_num):
+            d = int(d)
+            if i % 2 == 0:
+                d = d * 2 if d < 5 else d * 2 - 9
+            digit_sum += d
+        return (10 - digit_sum % 10) % 10
 
 
 def main():
@@ -40,8 +51,8 @@ def main():
         if action == "1":
             account = Account()
             print("\nYour card has been created")
-            print(f"Your card number:\n{account.get_card_number()}")
-            print(f"Your card pin:\n{account.get_pin()}\n")
+            print(f"Your card number:\n{account.card_number}")
+            print(f"Your card pin:\n{account.pin}\n")
         elif action == "2":
             card_number = input("\nEnter your card number:\n")
             pin = input("Enter your pin:\n")
