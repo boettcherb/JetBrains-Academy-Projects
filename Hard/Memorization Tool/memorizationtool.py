@@ -53,6 +53,25 @@ def add_flashcards(session):
         print()
 
 
+def update_card(session, card):
+    print('press "d" to delete the flashcard:')
+    print('press "e" to edit the flashcard:')
+    choice = input()
+    if choice == "d":
+        session.delete(card)
+        session.commit()
+    elif choice == "e":
+        print(f"current question: {card.question}")
+        new_question = input("please write a new question: ").strip()
+        if new_question != "":
+            card.question = new_question
+        print(f"current answer: {card.answer}")
+        new_answer = input("please write a new answer: ").strip()
+        if new_answer != "":
+            card.answer = new_answer
+        session.commit()
+
+
 def practice_flashcards(session):
     flashcards = session.query(Flashcard).all()
     if not flashcards:
@@ -60,12 +79,16 @@ def practice_flashcards(session):
         return
     for card in flashcards:
         print(f"\nQuestion: {card.question}")
-        print('Please press "y" to see the answer or press "n" to skip:')
+        print('press "y" to see the answer:')
+        print('press "n" to skip:')
+        print('press "u" to update:')
         choice = input()
         if choice == "y":
             print(f"\nAnswer: {card.answer}")
-        else:
+        elif choice == "n":
             print()
+        elif choice == "u":
+            update_card(session, card)
 
 
 def main():
