@@ -59,7 +59,7 @@ Please keep in mind the following:
 - Your questions and answers must be non-empty values. Otherwise, wait for the input.
 - Don't forget about the goodbye message. Output `Bye!` every time a user exits the program.
 
-### Example
+### Examples
 
 The greater-than symbol followed by a space (`> `) represents the user input. Note that it's not part of the input.
 
@@ -218,6 +218,291 @@ Answer:
 1. Add a new flashcard
 2. Exit
 > 2
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> 3
+
+Bye!
+```
+
+## 1. Store the Flashcards
+
+### Description
+
+In the previous stage, we created our first flashcards. The downside is that they are lost every time you close the program. We need to find a way to store them. We can use an SQLite database for this purpose. This database consists of a single file and is easy to install. To process this type of database with Python rather than SQL, we need Object Relational Mapper (ORM). SQLAlchemy can translate the Python classes to tables in relational databases and convert the function calls to SQL statements automatically.
+
+### Theory
+
+Theory
+
+When establishing a connection with the database, you should add a `check_same_thread=False` flag to the database name so that Hyperskill can test your project properly
+```
+engine = create_engine('sqlite:///<your database name.db>?check_same_thread=False')
+```
+After that, we need to create tables in the database so that the `declarative_base()` function can establish a base class. A base class stores a catalog of classes and mapped tables in the declarative system.
+```
+from sqlalchemy.ext.declarative import declarative_base
+Base = declarative_base()
+```
+Once the base class is declared, we can define any number of mapped classes inside. For now, we want to store the answers and questions in the database. To do that we need to define the following class:
+```
+from sqlalchemy import Column, Integer, String
+
+class MyClass(Base):
+    __tablename__ = 'my_table'
+
+    id = Column(Integer, primary_key=True)
+    first_column = Column(String)
+    second_column = Column(String)
+```
+A class in declarative must have a `__tablename__` attribute and at least one `Column` that constitutes a primary key.
+
+We also need to call the `MetaData.create_all()` method to create the corresponding table in the database.
+```
+Base.metadata.create_all(engine)
+```
+Now, you should create a session. And, finally, you are ready to add a new object to the table:
+```
+new_data = MyClass(first_column='What is the capital city of India', second_column='New Delhi')
+session.add(new_data)
+session.commit()
+```
+The added data will be pending until we call the `commit()` method.
+
+The `query(<mapped class name>)` method can help you access the table data.
+```
+result_list = session.query(MyClass).all()
+```
+This code snippet above includes the `all()` method that returns a list of all added objects.
+```
+print(result_list[0].question)  # What is the capital city of India
+print(result_list[0].answer)    # New Delhi
+print(result_list[0].id)        # 1
+```
+
+### Objectives
+
+In this stage, your program should implement the features from Stage 1 and do the following:
+
+1. Create a database. Please, name it `flashcard`: this will ensure the proper work of the tests (even though the tests will not check the file with the database itself).
+1. Create a table in the database, name it `flashcard`.
+1. Store a question in each table row with an answer and an ID.
+
+### Examples
+
+The greater-than symbol followed by a space (`> `) represents the user input. Note that it's not part of the input.
+
+Example 1:
+```
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> 2
+
+There is no flashcard to practice!
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> 1
+
+1. Add a new flashcard
+2. Exit
+> 1
+
+Question:
+> What is the capital city of Hungary?
+Answer:
+> Budapest
+
+1. Add a new flashcard
+2. Exit
+> 1
+
+Question:
+> What is the capital city of Chile?
+Answer:
+> Santiago
+
+1. Add a new flashcard
+2. Exit
+> 2
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> 3
+
+Bye!
+```
+Example 2:
+```
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> 2
+
+Question: What is the capital city of Hungary?
+Please press "y" to see the answer or press 'n' to skip:
+> y
+
+Answer: Budapest
+
+Question: What is the capital city of Chile?
+Please press "y" to see the answer or press "n" to skip:
+> y
+
+Answer: Santiago
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> 1
+
+1. Add a new flashcard
+2. Exit
+> 1
+
+Question:
+> What is the capital city of China?
+Answer:
+> Beijing
+
+1. Add a new flashcard
+2. Exit
+> 2
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> 2
+
+Question: What is the capital city of Hungary?
+Please press "y" to see the answer or press "n" to skip:
+> n
+
+
+Question: What is the capital city of Chile?
+Please press "y" to see the answer or press "n" to skip:
+> y
+
+Answer: Santiago
+
+Question: What is the capital city of China?
+Please press "y" to see the answer or press "n" to skip:
+> y
+
+Answer: Beijing
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> 3
+
+Bye!
+```
+Example 3:
+```
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> 5
+
+5 is not an option
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> ww
+
+ww is not an option
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> 1
+
+1. Add a new flashcard
+2. Exit
+> 0
+
+0 is not an option
+
+1. Add a new flashcard
+2. Exit
+> q3
+
+q3 is not an option
+
+1. Add a new flashcard
+2. Exit
+> 1
+
+Question:
+> What is the capital city of Switzerland?
+Answer:
+> Basel
+
+1. Add a new flashcard
+2. Exit
+> 1
+
+Question:
+>
+Question:
+>
+Question:
+> What is the capital city of Australia?
+Answer:
+>
+
+Answer:
+>
+
+Answer:
+> Canberra
+
+1. Add a new flashcard
+2. Exit
+> 2
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+> 2
+
+Question: What is the capital city of Hungary?
+Please press "y" to see the answer or press "n" to skip:
+> s
+
+Please press "y" to see the answer or press "n" to skip:
+> y
+
+Answer: Budapest
+
+Question: What is the capital city of Chile?
+Please press "y" to see the answer or press "n" to skip:
+> n
+
+
+Question: What is the capital city of China?
+Please press "y" to see the answer or press "n" to skip:
+> n
+
+
+Question: What is the capital city of Swiss?
+Please press "y" to see the answer or press "n" to skip:
+> y
+
+Answer: Basel
+
+Question: what is the capital city of Australia?
+Please press "y" to see the answer or press "n" to skip:
+> y
+
+Answer: Canberra
 
 1. Add flashcards
 2. Practice flashcards
