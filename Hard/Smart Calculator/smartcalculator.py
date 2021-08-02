@@ -1,3 +1,8 @@
+from string import ascii_letters
+
+variables = {}
+
+
 def process_command(command):
     if command == "/exit":
         return "exit"
@@ -11,17 +16,41 @@ def process_command(command):
 def valid_expression(expression):
     parts = expression.split()
     if len(parts) % 2 == 0:
+        print("Invalid expression")
         return False
     for i, part in enumerate(parts):
-        if i % 2 == 0:
-            try:
-                int(part)
-            except ValueError:
-                return False
-        else:
-            if part != ("+" * len(part)) and part != ("-" * len(part)):
-                return False
+        if i % 2 == 0 and get_value(part) is None:
+            print("Unknown variable")
+            return False
+        if i % 2 == 1 and part != ("+" * len(part)) and part != ("-" * len(part)):
+            print("Invalid expression")
+            return False
     return True
+
+
+def get_value(operand):
+    try:
+        return int(operand)
+    except:
+        return variables.get(operand, None)
+
+
+def process_assignment(expression):
+    if expression.count("=") != 1:
+        print("Invalid assignment")
+        return
+    left, right = (e.strip() for e in expression.split("="))
+    if any(c not in ascii_letters for c in left):
+        print("Invalid identifier")
+        return
+    val = get_value(right)
+    if val is None:
+        if all(c in ascii_letters for c in right):
+            print("Unknown variable")
+        else:
+            print("Invalid assignment")
+    else:
+        variables[left] = val
 
 
 def main():
@@ -33,14 +62,17 @@ def main():
             if process_command(expression) == "exit":
                 break
         else:
+            if expression.count("="):
+                process_assignment(expression)
+                continue
             if not valid_expression(expression):
                 print("Invalid expression")
                 continue
             expression = expression.split()
-            result = int(expression[0])
+            result = get_value(expression[0])
             for i in range(len(expression) // 2):
                 op = expression[i * 2 + 1]
-                number = int(expression[i * 2 + 2])
+                number = get_value(expression[i * 2 + 2])
                 result += number if op == "+" or len(op) % 2 == 0 else -number
             print(result)
     print("Bye!")
